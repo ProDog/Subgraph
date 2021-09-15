@@ -1,6 +1,77 @@
-type ExampleEntity @entity {
+type DepositEntity @entity {
   id: ID!
-  count: BigInt!
   user: Bytes! # address
-  assetFrom: Bytes! # address
+  assetFrom: Bytes! 
+  assetTo: Bytes! 
+  amount: BigInt! 
+  reward: BigInt! 
+  nonce: BigInt! 
+  deadline: BigInt! 
+  chainIDFrom: BigInt! 
+  chainIDTo: BigInt! 
+  height: BigInt!
+}
+
+type WithdrawEntity @entity {
+  id: ID!
+  user: Bytes! # address
+  assetFrom: Bytes! 
+  assetTo: Bytes! 
+  amount: BigInt! 
+  reward: BigInt! 
+  nonce: BigInt! 
+  chainIDFrom: BigInt! 
+  chainIDTo: BigInt! 
+  height: BigInt!
+}
+
+type LockEntity @entity {
+  id: ID!
+  user: Bytes! # address
+  assetFrom: Bytes! 
+  assetTo: Bytes! 
+  amount: BigInt! 
+  nonce: BigInt! 
+  relayer: Bytes! # address
+  deadline: BigInt! 
+  chainIDFrom: BigInt! 
+  chainIDTo: BigInt!  
+  height: BigInt!
+}
+
+type DepositForRelayerEntity @entity {
+  id: ID!
+  user: Bytes! # address
+  assetFrom: Bytes! 
+  assetTo: Bytes! 
+  amount: BigInt! 
+  deadline: BigInt! 
+  chainIDFrom: BigInt! 
+  chainIDTo: BigInt! 
+  height: BigInt!
+}
+
+type HarvestEntity @entity {
+  id: ID!
+  user: Bytes! # address
+  assetFrom: Bytes! 
+  assetTo: Bytes! 
+  chainIDFrom: BigInt! 
+  chainIDTo: BigInt! 
+  v: Int!
+  r: Bytes!
+  s: Bytes!
+  height: BigInt!
+}
+
+type HarvestForRealyerEntity @entity {
+  id: ID!
+  user: Bytes! # address
+  assetFrom: Bytes! 
+  assetTo: Bytes! 
+  amount: BigInt! 
+  reward: BigInt! 
+  chainIDFrom: BigInt! 
+  chainIDTo: BigInt! 
+  height: BigInt!
 }
