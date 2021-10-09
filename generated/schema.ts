@@ -51,6 +51,15 @@ export class DepositEntity extends Entity {
     this.set("user", Value.fromBytes(value));
   }
 
+  get relayer(): Bytes {
+    let value = this.get("relayer");
+    return value.toBytes();
+  }
+
+  set relayer(value: Bytes) {
+    this.set("relayer", Value.fromBytes(value));
+  }
+
   get assetFrom(): Bytes {
     let value = this.get("assetFrom");
     return value.toBytes();
@@ -587,7 +596,7 @@ export class HarvestEntity extends Entity {
   }
 }
 
-export class HarvestForRealyerEntity extends Entity {
+export class HarvestForRelayerEntity extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -597,21 +606,21 @@ export class HarvestForRealyerEntity extends Entity {
     let id = this.get("id");
     assert(
       id !== null,
-      "Cannot save HarvestForRealyerEntity entity without an ID"
+      "Cannot save HarvestForRelayerEntity entity without an ID"
     );
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save HarvestForRealyerEntity entity with non-string ID. " +
+      "Cannot save HarvestForRelayerEntity entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("HarvestForRealyerEntity", id.toString(), this);
+    store.set("HarvestForRelayerEntity", id.toString(), this);
   }
 
-  static load(id: string): HarvestForRealyerEntity | null {
+  static load(id: string): HarvestForRelayerEntity | null {
     return store.get(
-      "HarvestForRealyerEntity",
+      "HarvestForRelayerEntity",
       id
-    ) as HarvestForRealyerEntity | null;
+    ) as HarvestForRelayerEntity | null;
   }
 
   get id(): string {

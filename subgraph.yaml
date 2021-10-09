@@ -6,9 +6,9 @@ dataSources:
     name: Contract
     network: arbitrum-rinkeby
     source:
-      address: "0x8498a5d96AD8f65ed1E95D5Edfd4d4F48324C669"
+      address: "0x566FfE885b87A61430BDd3151E310F4c715F1a48"
       abi: Contract
-      startBlock: 4398000
+      startBlock: 5394867
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -17,23 +17,26 @@ dataSources:
         - Deposit
         - DepositForRelayer
         - Harvest
-        - HarvestForRealyer
+        - HarvestForRelayer
         - Lock
         - Withdraw
+        - WithdrawForRelayer
       abis:
         - name: Contract
           file: ./abis/Contract.json
       eventHandlers:
-        - event: Deposit(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256,uint256,uint256)
+        - event: Deposit(indexed address,address,indexed address,indexed address,uint256,uint256,uint256,uint256,uint256,uint256)
           handler: handleDeposit
         - event: DepositForRelayer(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: handleDepositForRelayer
         - event: Harvest(indexed address,indexed address,indexed address,uint256,uint256,uint8,bytes32,bytes32)
           handler: handleHarvest
-        - event: HarvestForRealyer(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256)
-          handler: handleHarvestForRealyer
+        - event: HarvestForRelayer(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: handleHarvestForRelayer
         - event: Lock(indexed address,indexed address,indexed address,uint256,uint256,address,uint256,uint256,uint256)
           handler: handleLock
         - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleWithdraw
+        - event: WithdrawForRelayer(indexed address,indexed address,uint256,uint256)
+          handler: handleWithdrawForRelayer
       file: ./src/mapping.ts

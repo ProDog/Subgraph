@@ -27,36 +27,40 @@ export class Deposit__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get assetFrom(): Address {
+  get relayer(): Address {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get assetTo(): Address {
+  get assetFrom(): Address {
     return this._event.parameters[2].value.toAddress();
   }
 
-  get amount(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
+  get assetTo(): Address {
+    return this._event.parameters[3].value.toAddress();
   }
 
-  get reward(): BigInt {
+  get amount(): BigInt {
     return this._event.parameters[4].value.toBigInt();
   }
 
-  get nonce(): BigInt {
+  get reward(): BigInt {
     return this._event.parameters[5].value.toBigInt();
   }
 
-  get deadline(): BigInt {
+  get nonce(): BigInt {
     return this._event.parameters[6].value.toBigInt();
   }
 
-  get chainIDFrom(): BigInt {
+  get deadline(): BigInt {
     return this._event.parameters[7].value.toBigInt();
   }
 
-  get chainIDTo(): BigInt {
+  get chainIDFrom(): BigInt {
     return this._event.parameters[8].value.toBigInt();
+  }
+
+  get chainIDTo(): BigInt {
+    return this._event.parameters[9].value.toBigInt();
   }
 }
 
@@ -148,16 +152,16 @@ export class Harvest__Params {
   }
 }
 
-export class HarvestForRealyer extends ethereum.Event {
-  get params(): HarvestForRealyer__Params {
-    return new HarvestForRealyer__Params(this);
+export class HarvestForRelayer extends ethereum.Event {
+  get params(): HarvestForRelayer__Params {
+    return new HarvestForRelayer__Params(this);
   }
 }
 
-export class HarvestForRealyer__Params {
-  _event: HarvestForRealyer;
+export class HarvestForRelayer__Params {
+  _event: HarvestForRelayer;
 
-  constructor(event: HarvestForRealyer) {
+  constructor(event: HarvestForRelayer) {
     this._event = event;
   }
 
@@ -352,6 +356,36 @@ export class Withdraw__Params {
   }
 }
 
+export class WithdrawForRelayer extends ethereum.Event {
+  get params(): WithdrawForRelayer__Params {
+    return new WithdrawForRelayer__Params(this);
+  }
+}
+
+export class WithdrawForRelayer__Params {
+  _event: WithdrawForRelayer;
+
+  constructor(event: WithdrawForRelayer) {
+    this._event = event;
+  }
+
+  get user(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get assetTo(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get chainIDFrom(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+}
+
 export class Contract__getDepositInfoCurrentResult {
   value0: BigInt;
   value1: BigInt;
@@ -418,6 +452,29 @@ export class Contract__getHarvestInfoCurrentResult {
 export class Contract extends ethereum.SmartContract {
   static bind(address: Address): Contract {
     return new Contract("Contract", address);
+  }
+
+  HARVEST_TYPEHASH(): Bytes {
+    let result = super.call(
+      "HARVEST_TYPEHASH",
+      "HARVEST_TYPEHASH():(bytes32)",
+      []
+    );
+
+    return result[0].toBytes();
+  }
+
+  try_HARVEST_TYPEHASH(): ethereum.CallResult<Bytes> {
+    let result = super.tryCall(
+      "HARVEST_TYPEHASH",
+      "HARVEST_TYPEHASH():(bytes32)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
   chainID(): BigInt {
@@ -566,29 +623,6 @@ export class Contract extends ethereum.SmartContract {
     );
   }
 
-  HARVEST_TYPEHASH(): Bytes {
-    let result = super.call(
-      "HARVEST_TYPEHASH",
-      "HARVEST_TYPEHASH():(bytes32)",
-      []
-    );
-
-    return result[0].toBytes();
-  }
-
-  try_HARVEST_TYPEHASH(): ethereum.CallResult<Bytes> {
-    let result = super.tryCall(
-      "HARVEST_TYPEHASH",
-      "HARVEST_TYPEHASH():(bytes32)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBytes());
-  }
-
   isAssetInWhiteList(asset: Address): boolean {
     let result = super.call(
       "isAssetInWhiteList",
@@ -715,6 +749,70 @@ export class Contract extends ethereum.SmartContract {
   }
 }
 
+export class ConstructorCall extends ethereum.Call {
+  get inputs(): ConstructorCall__Inputs {
+    return new ConstructorCall__Inputs(this);
+  }
+
+  get outputs(): ConstructorCall__Outputs {
+    return new ConstructorCall__Outputs(this);
+  }
+}
+
+export class ConstructorCall__Inputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
+    this._call = call;
+  }
+}
+
+export class ConstructorCall__Outputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
+    this._call = call;
+  }
+}
+
+export class AddRewardCall extends ethereum.Call {
+  get inputs(): AddRewardCall__Inputs {
+    return new AddRewardCall__Inputs(this);
+  }
+
+  get outputs(): AddRewardCall__Outputs {
+    return new AddRewardCall__Outputs(this);
+  }
+}
+
+export class AddRewardCall__Inputs {
+  _call: AddRewardCall;
+
+  constructor(call: AddRewardCall) {
+    this._call = call;
+  }
+
+  get assetFrom(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get reward(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get chainIDTo(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+}
+
+export class AddRewardCall__Outputs {
+  _call: AddRewardCall;
+
+  constructor(call: AddRewardCall) {
+    this._call = call;
+  }
+}
+
 export class DepositCall extends ethereum.Call {
   get inputs(): DepositCall__Inputs {
     return new DepositCall__Inputs(this);
@@ -819,6 +917,56 @@ export class DepositForRelayerCall__Outputs {
   }
 }
 
+export class DepositWithTargetCall extends ethereum.Call {
+  get inputs(): DepositWithTargetCall__Inputs {
+    return new DepositWithTargetCall__Inputs(this);
+  }
+
+  get outputs(): DepositWithTargetCall__Outputs {
+    return new DepositWithTargetCall__Outputs(this);
+  }
+}
+
+export class DepositWithTargetCall__Inputs {
+  _call: DepositWithTargetCall;
+
+  constructor(call: DepositWithTargetCall) {
+    this._call = call;
+  }
+
+  get assetFrom(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get assetTo(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get reward(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
+  }
+
+  get chainIDTo(): BigInt {
+    return this._call.inputValues[4].value.toBigInt();
+  }
+
+  get relayer(): Address {
+    return this._call.inputValues[5].value.toAddress();
+  }
+}
+
+export class DepositWithTargetCall__Outputs {
+  _call: DepositWithTargetCall;
+
+  constructor(call: DepositWithTargetCall) {
+    this._call = call;
+  }
+}
+
 export class HarvestCall extends ethereum.Call {
   get inputs(): HarvestCall__Inputs {
     return new HarvestCall__Inputs(this);
@@ -840,20 +988,24 @@ export class HarvestCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
+  get user(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
   get chainIDFrom(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
+    return this._call.inputValues[2].value.toBigInt();
   }
 
   get v(): i32 {
-    return this._call.inputValues[2].value.toI32();
+    return this._call.inputValues[3].value.toI32();
   }
 
   get r(): Bytes {
-    return this._call.inputValues[3].value.toBytes();
+    return this._call.inputValues[4].value.toBytes();
   }
 
   get s(): Bytes {
-    return this._call.inputValues[4].value.toBytes();
+    return this._call.inputValues[5].value.toBytes();
   }
 }
 
@@ -865,20 +1017,20 @@ export class HarvestCall__Outputs {
   }
 }
 
-export class HarvestForRealyerCall extends ethereum.Call {
-  get inputs(): HarvestForRealyerCall__Inputs {
-    return new HarvestForRealyerCall__Inputs(this);
+export class HarvestForRelayerCall extends ethereum.Call {
+  get inputs(): HarvestForRelayerCall__Inputs {
+    return new HarvestForRelayerCall__Inputs(this);
   }
 
-  get outputs(): HarvestForRealyerCall__Outputs {
-    return new HarvestForRealyerCall__Outputs(this);
+  get outputs(): HarvestForRelayerCall__Outputs {
+    return new HarvestForRelayerCall__Outputs(this);
   }
 }
 
-export class HarvestForRealyerCall__Inputs {
-  _call: HarvestForRealyerCall;
+export class HarvestForRelayerCall__Inputs {
+  _call: HarvestForRelayerCall;
 
-  constructor(call: HarvestForRealyerCall) {
+  constructor(call: HarvestForRelayerCall) {
     this._call = call;
   }
 
@@ -907,10 +1059,10 @@ export class HarvestForRealyerCall__Inputs {
   }
 }
 
-export class HarvestForRealyerCall__Outputs {
-  _call: HarvestForRealyerCall;
+export class HarvestForRelayerCall__Outputs {
+  _call: HarvestForRelayerCall;
 
-  constructor(call: HarvestForRealyerCall) {
+  constructor(call: HarvestForRelayerCall) {
     this._call = call;
   }
 }
@@ -1141,28 +1293,40 @@ export class WithdrawCall__Outputs {
   }
 }
 
-export class ConstructorCall extends ethereum.Call {
-  get inputs(): ConstructorCall__Inputs {
-    return new ConstructorCall__Inputs(this);
+export class WithdrawForRelayerCall extends ethereum.Call {
+  get inputs(): WithdrawForRelayerCall__Inputs {
+    return new WithdrawForRelayerCall__Inputs(this);
   }
 
-  get outputs(): ConstructorCall__Outputs {
-    return new ConstructorCall__Outputs(this);
+  get outputs(): WithdrawForRelayerCall__Outputs {
+    return new WithdrawForRelayerCall__Outputs(this);
   }
 }
 
-export class ConstructorCall__Inputs {
-  _call: ConstructorCall;
+export class WithdrawForRelayerCall__Inputs {
+  _call: WithdrawForRelayerCall;
 
-  constructor(call: ConstructorCall) {
+  constructor(call: WithdrawForRelayerCall) {
     this._call = call;
   }
+
+  get assetTo(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get user(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get chainIDFrom(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
 }
 
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
+export class WithdrawForRelayerCall__Outputs {
+  _call: WithdrawForRelayerCall;
 
-  constructor(call: ConstructorCall) {
+  constructor(call: WithdrawForRelayerCall) {
     this._call = call;
   }
 }

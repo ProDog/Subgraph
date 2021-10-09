@@ -1,6 +1,7 @@
 type DepositEntity @entity {
   id: ID!
   user: Bytes! # address
+  relayer: Bytes! # address
   assetFrom: Bytes! 
   assetTo: Bytes! 
   amount: BigInt! 
@@ -64,7 +65,7 @@ type HarvestEntity @entity {
   height: BigInt!
 }
 
-type HarvestForRealyerEntity @entity {
+type HarvestForRelayerEntity @entity {
   id: ID!
   user: Bytes! # address
   assetFrom: Bytes! 
